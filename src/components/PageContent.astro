@@ -1,0 +1,423 @@
+---
+import { useTranslations, type Lang } from '../i18n/translations';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const altLang = lang === 'es' ? 'en' : 'es';
+const altHref = lang === 'es' ? '/en/' : '/';
+const currentHref = lang === 'es' ? '/' : '/en/';
+---
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="menuClose">&#x2715;</button>
+  <ul>
+    <li><a href="#about" class="menu-link">{t.nav.project}</a></li>
+    <li><a href="#team" class="menu-link">{t.nav.team}</a></li>
+    <li><a href="#phases" class="menu-link">{t.nav.phases}</a></li>
+    <li><a href="#entities" class="menu-link">{t.nav.entities}</a></li>
+    <li><a href="#publications" class="menu-link">{t.nav.publications}</a></li>
+    <li><a href="#contact" class="menu-link">{t.nav.contact}</a></li>
+  </ul>
+  <div class="mobile-menu-lang">
+    <a href={currentHref} class={`lang-option ${lang === 'es' ? 'active' : ''}`}>ES</a>
+    <span style="color:#333;">/</span>
+    <a href={altHref} class={`lang-option ${lang === 'en' ? 'active' : ''}`}>EN</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href={currentHref} class="nav-logo">DALIA</a>
+  <ul class="nav-links">
+    <li><a href="#about">{t.nav.project}</a></li>
+    <li><a href="#team">{t.nav.team}</a></li>
+    <li><a href="#phases">{t.nav.phases}</a></li>
+    <li><a href="#entities">{t.nav.entities}</a></li>
+    <li><a href="#publications">{t.nav.publications}</a></li>
+    <li><a href="#contact">{t.nav.contact}</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <a href="/" class={lang === 'es' ? 'active' : ''}>ES</a>
+      <span style="color:#ccc;">/</span>
+      <a href="/en/" class={lang === 'en' ? 'active' : ''}>EN</a>
+    </div>
+    <div class="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <p class="hero-tag">{t.hero.tag}</p>
+    <h1 class="hero-title">DALIA</h1>
+    <p class="hero-subtitle-line1">{t.hero.line1}</p>
+    <p class="hero-subtitle-line2" set:html={t.hero.line2}></p>
+    <div class="hero-ctas">
+      <a href="#about" class="btn-primary">{t.hero.cta1}</a>
+      <a href="#team" class="btn-secondary">{t.hero.cta2}</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="/logo-dalia.png" alt="DALIA logo" class="dalia-logo" />
+    <div class="hero-meta">
+      <p>{t.hero.meta}</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p class="section-label">{t.about.label}</p>
+      <h2 class="section-title" set:html={t.about.title}></h2>
+      <p>{t.about.p1}</p>
+      <p>{t.about.p2}</p>
+      <p>{t.about.p3}</p>
+    </div>
+    <div class="about-objectives">
+      <h3>{t.about.objectivesTitle}</h3>
+      <div class="objective-item">
+        <span class="objective-num">01</span>
+        <p>{t.about.obj1}</p>
+      </div>
+      <div class="objective-item">
+        <span class="objective-num">02</span>
+        <p>{t.about.obj2}</p>
+      </div>
+      <div class="objective-item">
+        <span class="objective-num">03</span>
+        <p>{t.about.obj3}</p>
+      </div>
+      <div class="objective-item">
+        <span class="objective-num">04</span>
+        <p>{t.about.obj4}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="team-header reveal">
+    <div>
+      <p class="section-label" style="color:#e8433a;">{t.team.label}</p>
+      <h2 class="section-title" set:html={t.team.title}></h2>
+    </div>
+    <p style="font-size:0.8rem;color:#666;max-width:200px;text-align:right;">{t.team.count}</p>
+  </div>
+  <div class="team-grid">
+    <div class="team-card reveal">
+      <div class="team-card-placeholder"><span>NV</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Núria Vallès Peris</p>
+        <p class="team-card-role">{t.team.pi} &middot; IIIA-CSIC</p>
+      </div>
+      <div class="team-card-links">
+        <a href="#" class="team-link-btn">ORCID</a>
+        <a href="#" class="team-link-btn">Perfil</a>
+      </div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.05s">
+      <div class="team-card-placeholder"><span>VA</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Violeta Argudo</p>
+        <p class="team-card-role">{t.team.researcher_f} &middot; UB</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.1s">
+      <div class="team-card-placeholder"><span>VB</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Víctor Bermejo</p>
+        <p class="team-card-role">{t.team.researcher_m} &middot; IIIA-CSIC</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.15s">
+      <div class="team-card-placeholder"><span>MC</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Maite Cruz</p>
+        <p class="team-card-role">{t.team.researcher_f} &middot; EASP</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.2s">
+      <div class="team-card-placeholder"><span>ND</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Neus Domènech</p>
+        <p class="team-card-role">{t.team.researcher_f} &middot; Hospital Olot</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.25s">
+      <div class="team-card-placeholder"><span>BL</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Brenda Biaani León</p>
+        <p class="team-card-role">{t.team.researcher_f} &middot; IDIAP-JGol</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.3s">
+      <div class="team-card-placeholder"><span>LL</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Lisette Lemus</p>
+        <p class="team-card-role">{t.team.researcher_f} &middot; IIIA-CSIC</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.35s">
+      <div class="team-card-placeholder"><span>EM</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Eduard Moreno</p>
+        <p class="team-card-role">{t.team.researcher_m} &middot; IDIAP-JGol</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.4s">
+      <div class="team-card-placeholder"><span>JM</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Juan José Moreno</p>
+        <p class="team-card-role">{t.team.researcher_m} &middot; IDIAP-JGol</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.45s">
+      <div class="team-card-placeholder"><span>JM</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Joan Moyà</p>
+        <p class="team-card-role">{t.team.researcher_m} &middot; UAB</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.5s">
+      <div class="team-card-placeholder"><span>JP</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Joel Piqué</p>
+        <p class="team-card-role">{t.team.researcher_m} &middot; Hospital Olot</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.55s">
+      <div class="team-card-placeholder"><span>MP</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Marina Prat Carreño</p>
+        <p class="team-card-role">{t.team.researcher_f} &middot; IIIA-CSIC</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+    <div class="team-card reveal" style="transition-delay:0.6s">
+      <div class="team-card-placeholder"><span>VU</span></div>
+      <div class="team-card-info">
+        <p class="team-card-name">Valentina Umaña</p>
+        <p class="team-card-role">{t.team.researcher_f} &middot; IIIA-CSIC</p>
+      </div>
+      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- PHASES -->
+<section id="phases">
+  <div class="phases-inner">
+    <p class="section-label reveal">{t.phases.label}</p>
+    <h2 class="section-title reveal" set:html={t.phases.title}></h2>
+    <div class="timeline">
+      <div class="timeline-line"></div>
+      <div class="timeline-progress" id="timelineProgress"></div>
+      <div class="timeline-cards">
+        <div class="timeline-card active" id="phase1">
+          <div class="timeline-dot"></div>
+          <p class="timeline-year">{t.phases.phase1.year}</p>
+          <h3 class="timeline-phase" set:html={t.phases.phase1.title}></h3>
+          <p class="timeline-desc">{t.phases.phase1.desc}</p>
+        </div>
+        <div class="timeline-card" id="phase2">
+          <div class="timeline-dot"></div>
+          <p class="timeline-year">{t.phases.phase2.year}</p>
+          <h3 class="timeline-phase" set:html={t.phases.phase2.title}></h3>
+          <p class="timeline-desc">{t.phases.phase2.desc}</p>
+        </div>
+        <div class="timeline-card" id="phase3">
+          <div class="timeline-dot"></div>
+          <p class="timeline-year">{t.phases.phase3.year}</p>
+          <h3 class="timeline-phase" set:html={t.phases.phase3.title}></h3>
+          <p class="timeline-desc">{t.phases.phase3.desc}</p>
+        </div>
+        <div class="timeline-card" id="phase4">
+          <div class="timeline-dot"></div>
+          <p class="timeline-year">{t.phases.phase4.year}</p>
+          <h3 class="timeline-phase" set:html={t.phases.phase4.title}></h3>
+          <p class="timeline-desc">{t.phases.phase4.desc}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENTITIES -->
+<section id="entities">
+  <div class="entities-inner">
+    <p class="section-label reveal">{t.entities.label}</p>
+    <h2 class="section-title reveal">{t.entities.title}</h2>
+    <div class="entities-grid reveal">
+      <div class="entity-card">
+        <span class="entity-badge">{t.entities.coordinator}</span>
+        <p class="entity-name">Institut d'Investigació en Intel·ligència Artificial – CSIC</p>
+        <p class="entity-location">Barcelona, Cataluña</p>
+      </div>
+      <div class="entity-card">
+        <span class="entity-badge">{t.entities.participant}</span>
+        <p class="entity-name">Escuela Andaluza de Salud Pública</p>
+        <p class="entity-location">Granada, Andalucía</p>
+      </div>
+      <div class="entity-card">
+        <span class="entity-badge">{t.entities.participant}</span>
+        <p class="entity-name">Fundació Hospital d'Olot i Comarcal de la Garrotxa</p>
+        <p class="entity-location">Olot, Cataluña</p>
+      </div>
+      <div class="entity-card">
+        <span class="entity-badge">{t.entities.participant}</span>
+        <p class="entity-name">Institut d'Investigació en Atenció Primària Jordi Gol – ICS</p>
+        <p class="entity-location">Barcelona, Cataluña</p>
+      </div>
+      <div class="entity-card">
+        <span class="entity-badge">{t.entities.participant}</span>
+        <p class="entity-name">Universitat Autònoma de Barcelona</p>
+        <p class="entity-location">Bellaterra, Cataluña</p>
+      </div>
+      <div class="entity-card">
+        <span class="entity-badge">{t.entities.participant}</span>
+        <p class="entity-name">Universitat de Barcelona</p>
+        <p class="entity-location">Barcelona, Cataluña</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PUBLICATIONS -->
+<section id="publications">
+  <div class="pubs-inner">
+    <div class="pubs-header reveal">
+      <div>
+        <p class="section-label">{t.publications.label}</p>
+        <h2 class="section-title">{t.publications.title}</h2>
+      </div>
+    </div>
+    <div class="pubs-list reveal">
+      <div class="pub-empty">{t.publications.empty}</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="contact-info reveal">
+      <p class="section-label">{t.contact.label}</p>
+      <h2 class="section-title" set:html={t.contact.title}></h2>
+      <p>{t.contact.text}</p>
+      <div class="contact-detail">
+        <p class="contact-detail-label">{t.contact.piLabel}</p>
+        <p class="contact-detail-value">Núria Vallès Peris</p>
+      </div>
+      <div class="contact-detail">
+        <p class="contact-detail-label">{t.contact.emailLabel}</p>
+        <p class="contact-detail-value">
+          <a href="mailto:nuria.valles@iiia.csic.es">nuria.valles@iiia.csic.es</a>
+        </p>
+      </div>
+      <div class="contact-detail">
+        <p class="contact-detail-label">{t.contact.institutionLabel}</p>
+        <p class="contact-detail-value" set:html={t.contact.institutionValue}></p>
+      </div>
+    </div>
+    <div class="contact-map reveal" style="transition-delay:0.2s">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2988.0982293101156!2d2.10127867712562!3d41.50214608886753!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a4942a9b7b8f63%3A0x8a51bd1095fe826d!2sUniversidad%20Aut%C3%B3noma%20de%20Barcelona%20(UAB)!5e0!3m2!1ses!2ses!4v1772728724490!5m2!1ses!2ses"
+        width="100%" height="100%" style="border:0;display:block;"
+        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logos">
+    <div class="footer-logo-box"><span>IIIA–CSIC</span></div>
+    <div class="footer-logo-box"><span>CSIC</span></div>
+    <div class="footer-logo-box"><span>Min. Ciencia</span></div>
+  </div>
+  <span class="footer-dalia">DALIA</span>
+  <p class="footer-copy">{t.footer.copy}</p>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar?.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  const timelineCards = document.querySelectorAll('.timeline-card');
+  const timelineObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        timelineCards.forEach((card, i) => {
+          setTimeout(() => card.classList.add('visible'), i * 150);
+        });
+        timelineObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.2 });
+  if (timelineCards[0]) timelineObserver.observe(timelineCards[0]);
+
+  const mobileMenu = document.getElementById('mobileMenu');
+  const menuClose = document.getElementById('menuClose');
+  document.querySelector('.hamburger')?.addEventListener('click', () => mobileMenu?.classList.add('open'));
+  menuClose?.addEventListener('click', () => mobileMenu?.classList.remove('open'));
+  document.querySelectorAll('.menu-link').forEach(link => {
+    link.addEventListener('click', () => mobileMenu?.classList.remove('open'));
+  });
+
+  // Preserve scroll position on language switch
+  document.querySelectorAll('.lang-toggle a').forEach(link => {
+    link.addEventListener('click', () => {
+      sessionStorage.setItem('dalia-scroll', String(window.scrollY));
+    });
+  });
+  const savedScroll = sessionStorage.getItem('dalia-scroll');
+  if (savedScroll) {
+    sessionStorage.removeItem('dalia-scroll');
+    window.scrollTo({ top: parseInt(savedScroll), behavior: 'instant' });
+  }
+</script>
+
+<style>
+  .lang-toggle a, .mobile-menu-lang a {
+    text-decoration: none;
+    color: var(--gray);
+    transition: color 0.2s;
+  }
+  .lang-toggle a:hover { color: var(--black); }
+  .lang-toggle a.active { color: var(--accent); }
+  .mobile-menu-lang a { color: #555; }
+  .mobile-menu-lang a.active { color: var(--accent); }
+</style>
