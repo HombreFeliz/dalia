@@ -183,9 +183,16 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 
 .dalia-interactiva {
   width: min(460px, 85%);
+  height: auto;
   aspect-ratio: 1;
   overflow: hidden;
   flex-shrink: 0;
+}
+
+.dalia-interactiva canvas {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
 }
 
 .hero-meta {
