@@ -1,5 +1,6 @@
 ---
 import { useTranslations, type Lang } from '../i18n/translations';
+import DaliaInteractiva from './DaliaInteractiva.astro';
 
 interface Props {
   lang: Lang;
@@ -67,7 +68,7 @@ const currentHref = lang === 'es' ? '/' : '/en/';
     </div>
   </div>
   <div class="hero-right">
-    <img src="/logo-dalia.png" alt="DALIA logo" class="dalia-logo" />
+    <DaliaInteractiva class="dalia-interactiva" />
     <div class="hero-meta">
       <p>{t.hero.meta}</p>
     </div>

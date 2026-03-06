@@ -181,6 +181,11 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   width: min(420px, 80%);
 }
 
+.dalia-interactiva {
+  width: min(460px, 85%);
+  height: min(460px, 85vw);
+}
+
 .hero-meta {
   position: absolute;
   bottom: 3rem;

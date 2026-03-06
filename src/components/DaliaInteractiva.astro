@@ -1,0 +1,296 @@
+---
+/**
+ * DaliaInteractiva.astro
+ * 
+ * Componente drop-in para Astro.
+ * Renderiza una dalia generativa interactiva con p5.js.
+ * Los pétalos respiran y reaccionan al cursor.
+ * 
+ * Uso:
+ *   <DaliaInteractiva />
+ *   <DaliaInteractiva class="w-[500px] h-[500px]" />
+ * 
+ * El canvas se adapta al tamaño del contenedor padre.
+ * Fondo transparente — se integra sobre cualquier background.
+ */
+
+interface Props {
+  class?: string;
+  id?: string;
+}
+
+const { class: className = '', id = 'dahlia-canvas' } = Astro.props;
+---
+
+<div class={`dahlia-wrapper ${className}`} id={id} data-dahlia-root>
+  <canvas></canvas>
+</div>
+
+<style>
+  .dahlia-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .dahlia-wrapper canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<script>
+  // p5.js loaded via <script> in your layout/head, or dynamically here
+  async function initDahlia() {
+    // Dynamic import of p5 if not already global
+    if (typeof window.p5 === 'undefined') {
+      await new Promise<void>((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js';
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Failed to load p5.js'));
+        document.head.appendChild(script);
+      });
+    }
+
+    const containers = document.querySelectorAll('[data-dahlia-root]');
+
+    containers.forEach((container) => {
+      const canvasEl = container.querySelector('canvas');
+      if (!canvasEl || container.hasAttribute('data-dahlia-init')) return;
+      container.setAttribute('data-dahlia-init', 'true');
+
+      const SEED = 598586;
+      const RENDER_SIZE = 900; // Internal render resolution
+
+      const CONFIG = {
+        petalLayers: 11,
+        petalsPerLayer: 7,
+        windStrength: 2.5,
+        breathSpeed: 2.2,
+        cursorForce: 140,
+        stippleDensity: 0.8,
+        petalCurl: 2.0
+      };
+
+      let petals: any[] = [];
+      let mxSmooth = -9999;
+      let mySmooth = -9999;
+      let time = 0;
+
+      // @ts-ignore
+      new p5((p: any) => {
+
+        p.setup = () => {
+          const canvas = p.createCanvas(RENDER_SIZE, RENDER_SIZE, canvasEl);
+          p.pixelDensity(1);
+          buildDahlia(p);
+        };
+
+        p.draw = () => {
+          time += p.deltaTime * 0.001 * CONFIG.breathSpeed;
+
+          const rect = container.getBoundingClientRect();
+          const scale = RENDER_SIZE / rect.width;
+          const rawMX = (p.mouseX);
+          const rawMY = (p.mouseY);
+
+          const mouseInside = p.mouseX >= 0 && p.mouseX <= RENDER_SIZE &&
+                              p.mouseY >= 0 && p.mouseY <= RENDER_SIZE;
+
+          if (mouseInside) {
+            mxSmooth += (rawMX - mxSmooth) * 0.08;
+            mySmooth += (rawMY - mySmooth) * 0.08;
+          } else {
+            mxSmooth += (-9999 - mxSmooth) * 0.02;
+            mySmooth += (-9999 - mySmooth) * 0.02;
+          }
+
+          p.clear();
+
+          const cx = RENDER_SIZE / 2;
+          const cy = RENDER_SIZE / 2;
+
+          for (const pt of petals) {
+            updatePetal(p, pt, cx, cy);
+            drawPetal(p, pt, cx, cy);
+          }
+          drawCenter(p, cx, cy);
+        };
+
+      }, container as HTMLElement);
+
+      function buildDahlia(p: any) {
+        p.randomSeed(SEED);
+        p.noiseSeed(SEED);
+        petals = [];
+
+        const maxRadius = RENDER_SIZE * 0.38;
+
+        for (let layer = 0; layer < CONFIG.petalLayers; layer++) {
+          const layerRatio = layer / (CONFIG.petalLayers - 1);
+          const count = CONFIG.petalsPerLayer;
+          const baseAngleOffset = layer * 0.618033988 * p.PI;
+          const layerRadius = maxRadius * (1.0 - layerRatio * 0.6);
+          const petalLength = layerRadius * (0.6 + 0.4 * (1 - layerRatio));
+          const petalWidth = petalLength * (0.18 + 0.1 * layerRatio);
+
+          for (let i = 0; i < count; i++) {
+            const angle = (p.TWO_PI / count) * i + baseAngleOffset;
+            const angleJitter = (p.random() - 0.5) * 0.12;
+            const lengthJitter = 1.0 + (p.random() - 0.5) * 0.15;
+
+            petals.push({
+              layer,
+              layerRatio,
+              baseAngle: angle + angleJitter,
+              length: petalLength * lengthJitter,
+              width: petalWidth * (0.9 + p.random() * 0.2),
+              curlSign: p.random() > 0.5 ? 1 : -1,
+              curlAmount: 0.15 + p.random() * 0.25,
+              noiseOffset: p.random() * 1000,
+              breathPhase: p.random() * p.TWO_PI,
+              displaceX: 0,
+              displaceY: 0,
+              displaceAngle: 0,
+              stippleSeed: p.floor(p.random() * 99999)
+            });
+          }
+        }
+
+        petals.sort((a, b) => a.layerRatio - b.layerRatio);
+      }
+
+      function updatePetal(p: any, pt: any, cx: number, cy: number) {
+        const tipX = cx + p.cos(pt.baseAngle) * pt.length * 0.7;
+        const tipY = cy + p.sin(pt.baseAngle) * pt.length * 0.7;
+
+        const dx = tipX - mxSmooth;
+        const dy = tipY - mySmooth;
+        const dist = p.sqrt(dx * dx + dy * dy);
+        const cursorRadius = 250;
+        let cursorFx = 0, cursorFy = 0;
+
+        if (dist < cursorRadius && dist > 1) {
+          const strength = CONFIG.cursorForce * (1 - dist / cursorRadius) * (1 - dist / cursorRadius);
+          cursorFx = (dx / dist) * strength;
+          cursorFy = (dy / dist) * strength;
+        }
+
+        const windAngle = p.noise(time * 0.3, pt.noiseOffset * 0.01) * p.TWO_PI;
+        const windMag = p.noise(time * 0.2 + 100, pt.noiseOffset * 0.01) * CONFIG.windStrength * 8;
+
+        const breathAmp = 3 + 5 * (1 - pt.layerRatio);
+        const breathOsc = p.sin(time * 1.5 + pt.breathPhase) * breathAmp;
+
+        const targetDx = cursorFx + p.cos(windAngle) * windMag + p.cos(pt.baseAngle) * breathOsc;
+        const targetDy = cursorFy + p.sin(windAngle) * windMag + p.sin(pt.baseAngle) * breathOsc;
+        pt.displaceX += (targetDx - pt.displaceX) * 0.06;
+        pt.displaceY += (targetDy - pt.displaceY) * 0.06;
+
+        const perpForce = -p.sin(pt.baseAngle) * pt.displaceX + p.cos(pt.baseAngle) * pt.displaceY;
+        pt.displaceAngle += (perpForce * 0.003 - pt.displaceAngle) * 0.06;
+      }
+
+      function drawPetal(p: any, pt: any, cx: number, cy: number) {
+        p.push();
+        p.translate(cx, cy);
+        p.rotate(pt.baseAngle + pt.displaceAngle);
+        p.translate(pt.displaceX * 0.3, pt.displaceY * 0.3);
+
+        const len = pt.length;
+        const w = pt.width;
+        const curl = pt.curlAmount * CONFIG.petalCurl * pt.curlSign;
+        const innerStart = len * 0.08;
+        const tipX = len;
+        const tipY = curl * w * 0.3;
+
+        // Outline
+        p.noFill();
+        p.stroke(30, 30, 25, 160);
+        p.strokeWeight(0.6);
+        p.beginShape();
+        p.vertex(innerStart, 0);
+        p.bezierVertex(len * 0.3, -w * (0.8 + curl * 0.5), len * 0.7, -w * (0.5 + curl), tipX, tipY);
+        p.bezierVertex(len * 0.7, w * (0.5 - curl), len * 0.3, w * (0.8 - curl * 0.5), innerStart, 0);
+        p.endShape(p.CLOSE);
+
+        // Vein
+        p.stroke(30, 30, 25, 80);
+        p.strokeWeight(0.35);
+        p.bezier(innerStart, 0, len * 0.35, curl * 0.2 * w * 0.5, len * 0.65, curl * 0.2 * w, tipX, tipY);
+
+        // Stipple
+        p.randomSeed(pt.stippleSeed + SEED);
+        const density = CONFIG.stippleDensity;
+        const numMarks = p.floor(len * w * 0.06 * density);
+        p.stroke(25, 25, 20);
+        p.noFill();
+
+        for (let i = 0; i < numMarks; i++) {
+          const t = p.random(0.05, 0.98);
+          const s = p.random(-1, 1);
+          let px = p.lerp(innerStart, tipX, t);
+          let py = p.lerp(0, tipY, t);
+          const widthAtT = w * p.sin(t * p.PI) * (0.6 + 0.4 * (1 - p.abs(curl)));
+          py += s * widthAtT * 0.5;
+
+          const maxW = w * p.sin(t * p.PI) * 1.1;
+          if (p.abs(py - p.lerp(0, tipY, t)) > maxW * 0.55) continue;
+
+          const darkness = 0.15 + p.abs(s) * 0.5 + (1 - t) * 0.25;
+          if (p.random() > darkness * density) continue;
+
+          const ms = 1.0 + p.random() * 1.2;
+          p.strokeWeight(0.3 + darkness * 0.5);
+
+          const mt = p.floor(p.random() * 3);
+          if (mt === 0) {
+            p.line(px - ms, py - ms, px + ms, py + ms);
+            p.line(px + ms, py - ms, px - ms, py + ms);
+          } else if (mt === 1) {
+            p.point(px, py);
+          } else {
+            const da = p.random() * p.PI;
+            p.line(px - p.cos(da) * ms, py - p.sin(da) * ms, px + p.cos(da) * ms, py + p.sin(da) * ms);
+          }
+        }
+        p.randomSeed(SEED);
+        p.pop();
+      }
+
+      function drawCenter(p: any, cx: number, cy: number) {
+        p.push();
+        p.translate(cx, cy);
+        const cr = RENDER_SIZE * 0.04;
+        p.stroke(25, 25, 20);
+        p.randomSeed(SEED + 9999);
+        for (let i = 0; i < 300; i++) {
+          const a = p.random() * p.TWO_PI;
+          const r = p.random() * cr;
+          const px = p.cos(a) * r;
+          const py = p.sin(a) * r;
+          if (p.random() > (1 - r / cr) * 0.8) continue;
+          p.strokeWeight(0.4 + p.random() * 0.8);
+          const ms = 0.5 + p.random();
+          p.line(px - ms, py - ms, px + ms, py + ms);
+          p.line(px + ms, py - ms, px - ms, py + ms);
+        }
+        p.noFill();
+        p.stroke(30, 30, 25, 50);
+        p.strokeWeight(0.5);
+        p.ellipse(0, 0, cr * 2, cr * 2);
+        p.randomSeed(SEED);
+        p.pop();
+      }
+    });
+  }
+
+  // Init on page load and on Astro view transitions
+  document.addEventListener('astro:page-load', initDahlia);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDahlia);
+  } else {
+    initDahlia();
+  }
+</script>
