@@ -1,0 +1,29 @@
+---
+import { useTranslations, type Lang } from '../i18n/translations';
+
+interface Props {
+  lang: Lang;
+  methodKey: 'entrevistas' | 'cuestionarios' | 'etnografia' | 'procesoParticipativo';
+}
+
+const { lang, methodKey } = Astro.props;
+const t = useTranslations(lang);
+const method = t.methodology[methodKey];
+const homeHref = lang === 'es' ? '/' : '/en/';
+const backHref = lang === 'es' ? '/#metodologia' : '/en/#metodologia';
+---
+
+<nav id="navbar">
+  <a href={homeHref} class="nav-logo">DALIA</a>
+  <div class="nav-right">
+    <a href={backHref} class="back-link">{t.methodology.backLink}</a>
+  </div>
+</nav>
+
+<main class="methodology-page">
+  <p class="section-label">{t.phases.label}</p>
+  <h1 class="section-title">{method.title}</h1>
+  <p class="methodology-content">{method.content}</p>
+  <p class="methodology-placeholder">{t.methodology.placeholder}</p>
+  <a href={backHref} class="btn-secondary">{t.methodology.backLink}</a>
+</main>

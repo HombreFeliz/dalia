@@ -1,7 +1,8 @@
 :root {
   --black: #0a0a0a;
   --white: #f8f7f4;
-  --accent: #e8433a;
+  --accent: #f56991;
+  --accent-dark: #de5285;
   --gray: #888;
   --light-gray: #e8e6e1;
 }
@@ -35,7 +36,7 @@ nav {
 nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 
 .nav-logo {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 900;
   font-size: 1.3rem;
   letter-spacing: 0.05em;
@@ -79,6 +80,17 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   gap: 2rem;
 }
 
+.back-link {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--black);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--accent); }
+
 /* HERO */
 #hero {
   min-height: 100vh;
@@ -105,7 +117,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 }
 
 .hero-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: clamp(4rem, 8vw, 7rem);
   font-weight: 900;
   line-height: 0.95;
@@ -114,20 +126,20 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 }
 
 .hero-subtitle-line1 {
-  font-size: 0.78rem;
-  font-weight: 300;
-  color: var(--gray);
-  letter-spacing: 0.02em;
-  line-height: 1.5;
-  margin-bottom: 1.2rem;
-}
-
-.hero-subtitle-line2 {
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   font-weight: 400;
   color: var(--black);
   letter-spacing: 0em;
   line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.hero-subtitle-line2 {
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--gray);
+  letter-spacing: 0.02em;
+  line-height: 1.5;
   margin-bottom: 3rem;
 }
 
@@ -178,7 +190,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 }
 
 .dalia-logo {
-  width: min(420px, 80%);
+  width: min(500px, 90%);
 }
 
 .dalia-interactiva {
@@ -223,7 +235,7 @@ section {
 }
 
 .section-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: clamp(2rem, 4vw, 3.5rem);
   font-weight: 700;
   line-height: 1.1;
@@ -254,13 +266,31 @@ section {
   margin-bottom: 1.5rem;
 }
 
+.about-subtitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+  color: var(--black);
+}
+
+.about-reference {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 400;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--light-gray);
+}
+
 .about-objectives {
   border-left: 2px solid var(--accent);
   padding-left: 2rem;
 }
 
 .about-objectives h3 {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.2rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
@@ -346,7 +376,7 @@ section {
 }
 
 .team-card-placeholder span {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 2.5rem;
   font-weight: 900;
   color: #333;
@@ -397,8 +427,8 @@ section {
   text-decoration: none;
 }
 
-/* PHASES */
-#phases {
+/* METHODOLOGY (was PHASES) */
+#metodologia {
   background: var(--white);
   border-top: 1px solid var(--light-gray);
 }
@@ -422,16 +452,6 @@ section {
   background: var(--light-gray);
 }
 
-.timeline-progress {
-  position: absolute;
-  top: 2rem;
-  left: 0;
-  width: 25%;
-  height: 1px;
-  background: var(--accent);
-  transition: width 1s ease;
-}
-
 .timeline-cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -440,16 +460,21 @@ section {
 }
 
 .timeline-card {
+  display: block;
   padding: 4rem 2rem 2rem;
   border-right: 1px solid var(--light-gray);
   position: relative;
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.5s ease, transform 0.5s ease;
+  text-decoration: none;
+  color: inherit;
 }
 
 .timeline-card:last-child { border-right: none; }
 .timeline-card.visible { opacity: 1; transform: translateY(0); }
+
+.timeline-card:hover { background: rgba(0,0,0,0.02); }
 
 .timeline-dot {
   position: absolute;
@@ -458,14 +483,11 @@ section {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--light-gray);
+  background: var(--accent);
   border: 2px solid var(--white);
-  transition: background 0.3s;
 }
 
-.timeline-card.active .timeline-dot { background: var(--accent); }
-
-.timeline-year {
+.timeline-num {
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -475,7 +497,7 @@ section {
 }
 
 .timeline-phase {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   margin-bottom: 0.8rem;
@@ -486,6 +508,14 @@ section {
   font-size: 0.85rem;
   color: #666;
   line-height: 1.6;
+}
+
+.timeline-link {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--accent);
+  margin-top: 1rem;
+  letter-spacing: 0.05em;
 }
 
 /* ENTITIES */
@@ -537,7 +567,7 @@ section {
 }
 
 .entity-name {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.3;
@@ -597,7 +627,7 @@ section {
 }
 
 .pub-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.4;
@@ -764,11 +794,37 @@ footer {
 }
 
 .footer-dalia {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 1rem;
   font-weight: 900;
   color: #333;
   letter-spacing: 0.1em;
+}
+
+/* METHODOLOGY PAGE */
+.methodology-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 10rem 3rem 7rem;
+}
+
+.methodology-page .section-title {
+  margin-bottom: 3rem;
+}
+
+.methodology-content {
+  font-size: 1rem;
+  font-weight: 300;
+  color: #333;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.methodology-placeholder {
+  font-size: 0.85rem;
+  color: var(--gray);
+  font-style: italic;
+  margin-bottom: 3rem;
 }
 
 /* SCROLL ANIMATIONS */
@@ -819,7 +875,7 @@ footer {
 
 .mobile-menu ul li a {
   display: block;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Roboto', sans-serif;
   font-size: clamp(2rem, 8vw, 3rem);
   font-weight: 700;
   color: var(--white);
@@ -886,6 +942,10 @@ footer {
     overflow: hidden;
   }
 
+  .dalia-logo {
+    width: min(300px, 80vw);
+  }
+
   .dalia-interactiva {
     width: min(300px, 80vw);
   }
@@ -903,6 +963,8 @@ footer {
   section { padding: 5rem 1.5rem; }
 
   footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+
+  .methodology-page { padding: 8rem 1.5rem 5rem; }
 }
 
 @media (max-width: 600px) {
@@ -914,6 +976,7 @@ footer {
 
   .hero-left { padding: 3rem 1.25rem 2.5rem; }
   .hero-right { padding: 2rem 1.25rem; }
+  .dalia-logo { width: min(260px, 75vw); }
   .dalia-interactiva { width: min(260px, 75vw); }
 
   section { padding: 4rem 1.25rem; }
