@@ -76,19 +76,19 @@ const currentHref = lang === 'es' ? '/' : '/en/';
 
 <!-- ABOUT -->
 <section id="about">
-  <div class="about-grid reveal">
-    <div class="about-text">
-      <p class="section-label">{t.about.label}</p>
-      <h2 class="section-title">{t.about.title}</h2>
-      <p>{t.about.p1}</p>
-      <h3 class="about-subtitle">{t.about.aboutSubtitle}</h3>
-      <p>{t.about.p2}</p>
-      <p>{t.about.p3}</p>
-      <p>{t.about.p4}</p>
-      <p class="about-reference">{t.about.reference}</p>
-    </div>
-    <div class="about-objectives">
-      <h3>{t.about.objectivesTitle}</h3>
+  <div class="about-content reveal">
+    <p class="section-label">{t.about.label}</p>
+    <h2 class="section-title">{t.about.title}</h2>
+    <p>{t.about.p1}</p>
+    <h3 class="about-subtitle">{t.about.aboutSubtitle}</h3>
+    <p>{t.about.p2}</p>
+    <p>{t.about.p3}</p>
+    <p>{t.about.p4}</p>
+    <p class="about-reference">{t.about.reference}</p>
+  </div>
+  <div class="about-objectives reveal">
+    <h3>{t.about.objectivesTitle}</h3>
+    <div class="objectives-grid">
       <div class="objective-item">
         <span class="objective-num">01</span>
         <p>{t.about.obj1}</p>
@@ -119,31 +119,37 @@ const currentHref = lang === 'es' ? '/' : '/en/';
         <span class="entity-badge">{t.entities.coordinator}</span>
         <p class="entity-name">Institut d'Investigació en Intel·ligència Artificial – CSIC</p>
         <p class="entity-location">Barcelona, Cataluña</p>
+        <div class="entity-logo-placeholder"><span>LOGO</span></div>
       </div>
       <div class="entity-card">
         <span class="entity-badge">{t.entities.participant}</span>
         <p class="entity-name">Escuela Andaluza de Salud Pública</p>
         <p class="entity-location">Granada, Andalucía</p>
+        <div class="entity-logo-placeholder"><span>LOGO</span></div>
       </div>
       <div class="entity-card">
         <span class="entity-badge">{t.entities.participant}</span>
         <p class="entity-name">Fundació Hospital d'Olot i Comarcal de la Garrotxa</p>
         <p class="entity-location">Olot, Cataluña</p>
+        <div class="entity-logo-placeholder"><span>LOGO</span></div>
       </div>
       <div class="entity-card">
         <span class="entity-badge">{t.entities.participant}</span>
         <p class="entity-name">Institut d'Investigació en Atenció Primària Jordi Gol – ICS</p>
         <p class="entity-location">Barcelona, Cataluña</p>
+        <div class="entity-logo-placeholder"><span>LOGO</span></div>
       </div>
       <div class="entity-card">
         <span class="entity-badge">{t.entities.participant}</span>
         <p class="entity-name">Universitat Autònoma de Barcelona</p>
         <p class="entity-location">Bellaterra, Cataluña</p>
+        <div class="entity-logo-placeholder"><span>LOGO</span></div>
       </div>
       <div class="entity-card">
         <span class="entity-badge">{t.entities.participant}</span>
         <p class="entity-name">Universitat de Barcelona</p>
         <p class="entity-location">Barcelona, Cataluña</p>
+        <div class="entity-logo-placeholder"><span>LOGO</span></div>
       </div>
     </div>
   </div>

@@ -118,11 +118,11 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 
 .hero-title {
   font-family: 'Roboto', sans-serif;
-  font-size: clamp(4rem, 8vw, 7rem);
+  font-size: clamp(5rem, 10vw, 9rem);
   font-weight: 900;
   line-height: 0.95;
   letter-spacing: -0.02em;
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
 }
 
 .hero-subtitle-line1 {
@@ -185,12 +185,13 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4rem;
+  padding: 1.5rem;
   position: relative;
 }
 
 .dalia-logo {
-  width: min(500px, 90%);
+  width: 100%;
+  max-width: 100%;
 }
 
 .dalia-interactiva {
@@ -249,16 +250,12 @@ section {
   border-top: 1px solid var(--light-gray);
 }
 
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5rem;
-  align-items: start;
+.about-content {
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.about-text p {
+.about-content p {
   font-size: 1rem;
   font-weight: 300;
   color: #333;
@@ -285,21 +282,29 @@ section {
 }
 
 .about-objectives {
-  border-left: 2px solid var(--accent);
-  padding-left: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--light-gray);
 }
 
 .about-objectives h3 {
   font-family: 'Roboto', sans-serif;
   font-size: 1.2rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.objectives-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem 4rem;
 }
 
 .objective-item {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1.2rem;
   align-items: flex-start;
 }
 
@@ -578,6 +583,24 @@ section {
   font-size: 0.75rem;
   color: var(--gray);
   font-weight: 300;
+}
+
+.entity-logo-placeholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--light-gray);
+  border-radius: 6px;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.entity-logo-placeholder span {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--gray);
+  letter-spacing: 0.1em;
 }
 
 /* PUBLICATIONS */
@@ -937,20 +960,21 @@ footer {
   }
 
   .hero-right {
-    padding: 2.5rem 1.5rem;
+    padding: 1.5rem;
     order: 1;
     overflow: hidden;
   }
 
   .dalia-logo {
-    width: min(300px, 80vw);
+    width: 100%;
+    max-width: 100%;
   }
 
   .dalia-interactiva {
     width: min(300px, 80vw);
   }
 
-  .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .objectives-grid { grid-template-columns: 1fr; }
 
   .timeline-cards { grid-template-columns: 1fr 1fr; }
 
@@ -975,8 +999,8 @@ footer {
   .pub-type { display: none; }
 
   .hero-left { padding: 3rem 1.25rem 2.5rem; }
-  .hero-right { padding: 2rem 1.25rem; }
-  .dalia-logo { width: min(260px, 75vw); }
+  .hero-right { padding: 1rem; }
+  .dalia-logo { width: 100%; max-width: 100%; }
   .dalia-interactiva { width: min(260px, 75vw); }
 
   section { padding: 4rem 1.25rem; }
