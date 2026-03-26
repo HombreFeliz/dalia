@@ -9,6 +9,28 @@ Sitio construido con [Astro](https://astro.build) y gestionado con [Sanity CMS](
 - Node.js 18+
 - Cuenta en [Sanity](https://www.sanity.io/) con acceso al proyecto `ct4976jq`
 
+## Puesta en marcha
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/HombreFeliz/dalia.git
+cd dalia
+
+# 2. Instalar dependencias
+npm install
+
+# 3. Iniciar sesión en Sanity (solo la primera vez)
+npx sanity login
+
+# 4. Arrancar la web en local
+npm run dev
+
+# 5. Arrancar Sanity Studio en local (en otra terminal)
+npm run sanity
+```
+
+La web estará en `http://localhost:4321` y el Studio en `http://localhost:3333`.
+
 ## Comandos
 
 | Comando                | Acción                                          |
@@ -19,6 +41,18 @@ Sitio construido con [Astro](https://astro.build) y gestionado con [Sanity CMS](
 | `npm run preview`      | Previsualiza el build en local                  |
 | `npm run sanity`       | Arranca Sanity Studio en `localhost:3333`        |
 | `npm run sanity:deploy`| Despliega Sanity Studio en `*.sanity.studio`    |
+| `npx sanity login`    | Inicia sesión en Sanity (necesario antes de deploy) |
+
+## Desplegar Sanity Studio
+
+El Studio desplegado en `*.sanity.studio` es la versión que usan los colaboradores desde el navegador. Cada vez que se modifican los **esquemas** (archivos en `src/sanity/schemas/`), hay que re-desplegarlo:
+
+```bash
+npx sanity login       # solo si no has iniciado sesión antes
+npm run sanity:deploy
+```
+
+> **Nota:** Cambios de **contenido** (textos, imágenes) hechos desde el Studio no requieren re-deploy del Studio. Solo los cambios en la estructura de los esquemas (campos nuevos, tipos nuevos, etc.) lo requieren.
 
 ## Sanity CMS
 
