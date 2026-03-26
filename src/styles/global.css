@@ -245,6 +245,27 @@ section {
 }
 
 /* ABOUT */
+.about-title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 2.5rem;
+  max-width: 100%;
+}
+
+.about-title-main {
+  display: block;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+.about-title-sub {
+  display: block;
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
+  font-weight: 400;
+  margin-top: 0.5rem;
+  color: #555;
+}
+
 #about {
   background: var(--white);
   border-top: 1px solid var(--light-gray);
