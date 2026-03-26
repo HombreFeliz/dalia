@@ -14,9 +14,16 @@ export const aboutSection = defineType({
     }),
     defineField({
       name: 'title',
-      title: 'Título de sección',
+      title: 'Título principal',
+      description: 'Ej: "Datos, Algoritmos e Inteligencia Artificial en Atención Primaria."',
       type: 'localeString',
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'subtitle',
+      title: 'Subtítulo del encabezado',
+      description: 'Ej: "Hacia una digitalización responsable en los cuidados y la salud (DALIA)"',
+      type: 'localeString',
     }),
     defineField({
       name: 'description',

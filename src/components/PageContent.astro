@@ -51,7 +51,12 @@ const hero = {
 // ─── About ──────────────────────────────────────────────
 const about = {
   label: s(sanity?.about?.label, t.about.label),
-  title: s(sanity?.about?.title, t.about.title),
+  titleMain: s(sanity?.about?.title, lang === 'es'
+    ? 'Datos, Algoritmos e Inteligencia Artificial en Atención Primaria.'
+    : 'Data, Algorithms and Artificial Intelligence in Primary Care.'),
+  titleSub: s(sanity?.about?.subtitle, lang === 'es'
+    ? 'Hacia una digitalización responsable en los cuidados y la salud (DALIA)'
+    : 'Towards responsible digitalisation in care and health (DALIA)'),
   p1: s(sanity?.about?.description, t.about.p1),
   aboutSubtitle: s(sanity?.about?.aboutSubtitle, t.about.aboutSubtitle),
   p2: sanity?.about?.paragraphs?.[0] ? s(sanity.about.paragraphs[0], t.about.p2) : t.about.p2,
@@ -242,8 +247,8 @@ const footer = {
   <div class="about-content reveal">
     <p class="section-label">{about.label}</p>
     <h2 class="about-title">
-      <span class="about-title-main">Datos, Algoritmos e Inteligencia Artificial en Atención Primaria.</span>
-      <span class="about-title-sub">Hacia una digitalización responsable en los cuidados y la salud (DALIA)</span>
+      <span class="about-title-main">{about.titleMain}</span>
+      <span class="about-title-sub">{about.titleSub}</span>
     </h2>
     <p>{about.p1}</p>
     <h3 class="about-subtitle">{about.aboutSubtitle}</h3>

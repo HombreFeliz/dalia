@@ -19,6 +19,7 @@ export async function getAboutSection() {
   return sanityClient.fetch(`*[_type == "aboutSection" && _id == "aboutSection"][0]{
     label,
     title,
+    subtitle,
     description,
     aboutSubtitle,
     paragraphs,
