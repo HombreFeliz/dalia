@@ -25,3 +25,4 @@ pnpm-debug.log*
 
 # local claude config
 .claude/
+.sanity/

@@ -1,5 +1,6 @@
 ---
 import { useTranslations, type Lang } from '../i18n/translations';
+import { getMethodologyPhaseBySlug, getSiteSettings, localize } from '../sanity/queries';
 
 interface Props {
   lang: Lang;
@@ -11,19 +12,50 @@ const t = useTranslations(lang);
 const method = t.methodology[methodKey];
 const homeHref = lang === 'es' ? '/' : '/en/';
 const backHref = lang === 'es' ? '/#metodologia' : '/en/#metodologia';
+
+// Slug mapping for Sanity lookup
+const slugMap: Record<string, string> = {
+  entrevistas: 'entrevistas',
+  cuestionarios: 'cuestionarios',
+  etnografia: 'etnografia',
+  procesoParticipativo: 'proceso-participativo',
+};
+
+// Fetch from Sanity
+let sanityPhase: any = null;
+let sanitySettings: any = null;
+try {
+  [sanityPhase, sanitySettings] = await Promise.all([
+    getMethodologyPhaseBySlug(slugMap[methodKey]),
+    getSiteSettings(),
+  ]);
+} catch {
+  // Sanity unavailable
+}
+
+const s = <T,>(sanityObj: { es?: T; en?: T } | null | undefined, fallback: T): T => {
+  if (!sanityObj) return fallback;
+  return sanityObj[lang] ?? sanityObj.es ?? fallback;
+};
+
+const phaseTitle = s(sanityPhase?.title, method.title);
+const phaseContent = s(sanityPhase?.summary, method.content);
+const phasesLabel = s(sanitySettings?.phasesLabel, t.phases.label);
+const backLinkText = s(sanitySettings?.methodologyBackLink, t.methodology.backLink);
+const placeholderText = s(sanitySettings?.methodologyPlaceholder, t.methodology.placeholder);
 ---
 
 <nav id="navbar">
   <a href={homeHref} class="nav-logo">DALIA</a>
   <div class="nav-right">
-    <a href={backHref} class="back-link">{t.methodology.backLink}</a>
+    <a href={backHref} class="back-link">{backLinkText}</a>
   </div>
 </nav>
 
 <main class="methodology-page">
-  <p class="section-label">{t.phases.label}</p>
-  <h1 class="section-title">{method.title}</h1>
-  <p class="methodology-content">{method.content}</p>
-  <p class="methodology-placeholder">{t.methodology.placeholder}</p>
-  <a href={backHref} class="btn-secondary">{t.methodology.backLink}</a>
+  <p class="section-label">{phasesLabel}</p>
+  <h1 class="section-title">{phaseTitle}</h1>
+  <p class="methodology-content">{phaseContent}</p>
+  <p class="methodology-placeholder">{placeholderText}</p>
+  <a href={backHref} class="btn-secondary">{backLinkText}</a>
 </main>
