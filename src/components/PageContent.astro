@@ -1,5 +1,6 @@
 ---
 import { useTranslations, type Lang } from '../i18n/translations';
+import { getHomePageData, localize } from '../sanity/queries';
 
 interface Props {
   lang: Lang;
@@ -11,18 +12,180 @@ const t = useTranslations(lang);
 const altLang = lang === 'es' ? 'en' : 'es';
 const altHref = lang === 'es' ? '/en/' : '/';
 const currentHref = lang === 'es' ? '/' : '/en/';
+
+// Fetch from Sanity (falls back to translations.ts when Sanity data is empty)
+let sanity: Awaited<ReturnType<typeof getHomePageData>> | null = null;
+try {
+  sanity = await getHomePageData();
+} catch {
+  // Sanity unavailable — use static translations
+}
+
+// Helper: get Sanity localized value or fallback
+const s = <T,>(sanityObj: { es?: T; en?: T } | null | undefined, fallback: T): T => {
+  if (!sanityObj) return fallback;
+  return sanityObj[lang] ?? sanityObj.es ?? fallback;
+};
+
+// ─── Navigation ─────────────────────────────────────────
+const nav = {
+  project: s(sanity?.settings?.navProject, t.nav.project),
+  entities: s(sanity?.settings?.navEntities, t.nav.entities),
+  team: s(sanity?.settings?.navTeam, t.nav.team),
+  phases: s(sanity?.settings?.navPhases, t.nav.phases),
+  publications: s(sanity?.settings?.navPublications, t.nav.publications),
+  contact: s(sanity?.settings?.navContact, t.nav.contact),
+};
+
+// ─── Hero ───────────────────────────────────────────────
+const hero = {
+  tag: s(sanity?.hero?.tag, t.hero.tag),
+  line1: s(sanity?.hero?.line1, t.hero.line1),
+  line2: s(sanity?.hero?.line2, t.hero.line2),
+  cta1: s(sanity?.hero?.cta1, t.hero.cta1),
+  cta2: s(sanity?.hero?.cta2, t.hero.cta2),
+  meta: s(sanity?.hero?.meta, t.hero.meta),
+  logo: sanity?.hero?.logo || '/logo-dalia.png',
+};
+
+// ─── About ──────────────────────────────────────────────
+const about = {
+  label: s(sanity?.about?.label, t.about.label),
+  title: s(sanity?.about?.title, t.about.title),
+  p1: s(sanity?.about?.description, t.about.p1),
+  aboutSubtitle: s(sanity?.about?.aboutSubtitle, t.about.aboutSubtitle),
+  p2: sanity?.about?.paragraphs?.[0] ? s(sanity.about.paragraphs[0], t.about.p2) : t.about.p2,
+  p3: sanity?.about?.paragraphs?.[1] ? s(sanity.about.paragraphs[1], t.about.p3) : t.about.p3,
+  p4: sanity?.about?.paragraphs?.[2] ? s(sanity.about.paragraphs[2], t.about.p4) : t.about.p4,
+  reference: s(sanity?.about?.reference, t.about.reference),
+  objectivesTitle: s(sanity?.about?.objectivesTitle, t.about.objectivesTitle),
+  objectives: sanity?.about?.objectives?.length
+    ? sanity.about.objectives.map((o: any) => s(o.text, ''))
+    : [t.about.obj1, t.about.obj2, t.about.obj3, t.about.obj4],
+};
+
+// ─── Team ───────────────────────────────────────────────
+const teamLabels = {
+  label: s(sanity?.settings?.teamLabel, t.team.label),
+  title: s(sanity?.settings?.teamTitle, t.team.title),
+  count: s(sanity?.settings?.teamCount, t.team.count),
+  pi: s(sanity?.settings?.piRoleLabel, t.team.pi),
+  researcher_f: s(sanity?.settings?.researcherFemaleLabel, t.team.researcher_f),
+  researcher_m: s(sanity?.settings?.researcherMaleLabel, t.team.researcher_m),
+};
+
+// Team members from Sanity or fallback to hardcoded
+const defaultTeam = [
+  { name: 'Núria Vallès Peris', role: 'pi', institution: 'IIIA-CSIC', initials: 'NV', orcidUrl: '#', profileUrl: '#' },
+  { name: 'Violeta Argudo', role: 'researcher_f', institution: 'UB', initials: 'VA', orcidUrl: '#' },
+  { name: 'Víctor Bermejo', role: 'researcher_m', institution: 'IIIA-CSIC', initials: 'VB', orcidUrl: '#' },
+  { name: 'Maite Cruz', role: 'researcher_f', institution: 'EASP', initials: 'MC', orcidUrl: '#' },
+  { name: 'Neus Domènech', role: 'researcher_f', institution: 'Hospital Olot', initials: 'ND', orcidUrl: '#' },
+  { name: 'Lisette Lemus', role: 'researcher_f', institution: 'IIIA-CSIC', initials: 'LL', orcidUrl: '#' },
+  { name: 'Brenda Biaani León', role: 'researcher_f', institution: 'IDIAP-JGol', initials: 'BL', orcidUrl: '#' },
+  { name: 'Eduard Moreno', role: 'researcher_m', institution: 'IDIAP-JGol', initials: 'EM', orcidUrl: '#' },
+  { name: 'Juan José Moreno', role: 'researcher_m', institution: 'IDIAP-JGol', initials: 'JM', orcidUrl: '#' },
+  { name: 'Joan Moyà', role: 'researcher_m', institution: 'UAB', initials: 'JM', orcidUrl: '#' },
+  { name: 'Joel Piqué', role: 'researcher_m', institution: 'Hospital Olot', initials: 'JP', orcidUrl: '#' },
+  { name: 'Marina Prat Carreño', role: 'researcher_f', institution: 'IIIA-CSIC', initials: 'MP', orcidUrl: '#' },
+  { name: 'Valentina Umaña', role: 'researcher_f', institution: 'IIIA-CSIC', initials: 'VU', orcidUrl: '#' },
+];
+const teamMembers = sanity?.team?.length ? sanity.team : defaultTeam;
+
+function getRoleLabel(role: string) {
+  if (role === 'pi') return teamLabels.pi;
+  if (role === 'researcher_f') return teamLabels.researcher_f;
+  return teamLabels.researcher_m;
+}
+
+// ─── Entities ───────────────────────────────────────────
+const entitiesLabels = {
+  label: s(sanity?.settings?.entitiesLabel, t.entities.label),
+  title: s(sanity?.settings?.entitiesTitle, t.entities.title),
+  coordinator: s(sanity?.settings?.coordinatorLabel, t.entities.coordinator),
+  participant: s(sanity?.settings?.participantLabel, t.entities.participant),
+};
+
+const defaultEntities = [
+  { name: "Institut d'Investigació en Intel·ligència Artificial – CSIC", location: 'Barcelona, Cataluña', type: 'coordinator' },
+  { name: 'Escuela Andaluza de Salud Pública', location: 'Granada, Andalucía', type: 'participant' },
+  { name: "Fundació Hospital d'Olot i Comarcal de la Garrotxa", location: 'Olot, Cataluña', type: 'participant' },
+  { name: "Institut d'Investigació en Atenció Primària Jordi Gol – ICS", location: 'Barcelona, Cataluña', type: 'participant' },
+  { name: 'Universitat Autònoma de Barcelona', location: 'Bellaterra, Cataluña', type: 'participant' },
+  { name: 'Universitat de Barcelona', location: 'Barcelona, Cataluña', type: 'participant' },
+];
+const entities = sanity?.entities?.length ? sanity.entities : defaultEntities;
+
+// ─── Methodology phases ────────────────────────────────
+const phasesLabels = {
+  label: s(sanity?.settings?.phasesLabel, t.phases.label),
+  title: s(sanity?.settings?.phasesTitle, t.phases.title),
+  readMore: s(sanity?.settings?.readMoreLabel, t.phases.readMore),
+};
+
+const defaultPhases = [
+  { phaseNumber: 1, title: t.phases.phase1.title, desc: t.phases.phase1.desc, url: t.phases.phase1.url },
+  { phaseNumber: 2, title: t.phases.phase2.title, desc: t.phases.phase2.desc, url: t.phases.phase2.url },
+  { phaseNumber: 3, title: t.phases.phase3.title, desc: t.phases.phase3.desc, url: t.phases.phase3.url },
+  { phaseNumber: 4, title: t.phases.phase4.title, desc: t.phases.phase4.desc, url: t.phases.phase4.url },
+];
+
+const phases = sanity?.phases?.length
+  ? sanity.phases.map((p: any) => ({
+      phaseNumber: p.phaseNumber,
+      title: s(p.title, ''),
+      desc: s(p.description, ''),
+      url: lang === 'es'
+        ? `/metodologia/${p.slug}/`
+        : `/en/methodology/${p.slugEn}/`,
+    }))
+  : defaultPhases;
+
+// ─── Publications ───────────────────────────────────────
+const pubLabels = {
+  label: s(sanity?.settings?.publicationsLabel, t.publications.label),
+  title: s(sanity?.settings?.publicationsTitle, t.publications.title),
+  empty: s(sanity?.settings?.publicationsEmpty, t.publications.empty),
+};
+const publications = sanity?.publications ?? [];
+
+// ─── Contact ────────────────────────────────────────────
+const contact = {
+  label: s(sanity?.contact?.label, t.contact.label),
+  title: s(sanity?.contact?.title, t.contact.title),
+  text: s(sanity?.contact?.text, t.contact.text),
+  piName: sanity?.contact?.piName || 'Núria Vallès Peris',
+  piLabel: s(sanity?.contact?.piLabel, t.contact.piLabel),
+  email: sanity?.contact?.email || 'nuria.valles@iiia.csic.es',
+  emailLabel: s(sanity?.contact?.emailLabel, t.contact.emailLabel),
+  institutionLabel: s(sanity?.contact?.institutionLabel, t.contact.institutionLabel),
+  institutionValue: s(sanity?.contact?.institutionValue, t.contact.institutionValue),
+  mapEmbedUrl: sanity?.contact?.mapEmbedUrl || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2988.0982293101156!2d2.10127867712562!3d41.50214608886753!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a4942a9b7b8f63%3A0x8a51bd1095fe826d!2sUniversidad%20Aut%C3%B3noma%20de%20Barcelona%20(UAB)!5e0!3m2!1ses!2ses!4v1772728724490!5m2!1ses!2ses',
+};
+
+// ─── Footer ─────────────────────────────────────────────
+const footer = {
+  copy: s(sanity?.settings?.footerCopy, t.footer.copy),
+  logos: sanity?.settings?.footerLogos?.length
+    ? sanity.settings.footerLogos
+    : [
+        { name: 'IIIA–CSIC', logoUrl: null },
+        { name: 'CSIC', logoUrl: null },
+        { name: 'Min. Ciencia', logoUrl: null },
+      ],
+};
 ---
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
   <button class="mobile-menu-close" id="menuClose">&#x2715;</button>
   <ul>
-    <li><a href="#about" class="menu-link">{t.nav.project}</a></li>
-    <li><a href="#entities" class="menu-link">{t.nav.entities}</a></li>
-    <li><a href="#team" class="menu-link">{t.nav.team}</a></li>
-    <li><a href="#metodologia" class="menu-link">{t.nav.phases}</a></li>
-    <li><a href="#publications" class="menu-link">{t.nav.publications}</a></li>
-    <li><a href="#contact" class="menu-link">{t.nav.contact}</a></li>
+    <li><a href="#about" class="menu-link">{nav.project}</a></li>
+    <li><a href="#entities" class="menu-link">{nav.entities}</a></li>
+    <li><a href="#team" class="menu-link">{nav.team}</a></li>
+    <li><a href="#metodologia" class="menu-link">{nav.phases}</a></li>
+    <li><a href="#publications" class="menu-link">{nav.publications}</a></li>
+    <li><a href="#contact" class="menu-link">{nav.contact}</a></li>
   </ul>
   <div class="mobile-menu-lang">
     <a href={currentHref} class={`lang-option ${lang === 'es' ? 'active' : ''}`}>ES</a>
@@ -35,12 +198,12 @@ const currentHref = lang === 'es' ? '/' : '/en/';
 <nav id="navbar">
   <a href={currentHref} class="nav-logo">DALIA</a>
   <ul class="nav-links">
-    <li><a href="#about">{t.nav.project}</a></li>
-    <li><a href="#entities">{t.nav.entities}</a></li>
-    <li><a href="#team">{t.nav.team}</a></li>
-    <li><a href="#metodologia">{t.nav.phases}</a></li>
-    <li><a href="#publications">{t.nav.publications}</a></li>
-    <li><a href="#contact">{t.nav.contact}</a></li>
+    <li><a href="#about">{nav.project}</a></li>
+    <li><a href="#entities">{nav.entities}</a></li>
+    <li><a href="#team">{nav.team}</a></li>
+    <li><a href="#metodologia">{nav.phases}</a></li>
+    <li><a href="#publications">{nav.publications}</a></li>
+    <li><a href="#contact">{nav.contact}</a></li>
   </ul>
   <div class="nav-right">
     <div class="lang-toggle">
@@ -57,19 +220,19 @@ const currentHref = lang === 'es' ? '/' : '/en/';
 <!-- HERO -->
 <section id="hero">
   <div class="hero-left">
-    <p class="hero-tag">{t.hero.tag}</p>
+    <p class="hero-tag">{hero.tag}</p>
     <h1 class="hero-title">DALIA</h1>
-    <p class="hero-subtitle-line1">{t.hero.line1}</p>
-    <p class="hero-subtitle-line2" set:html={t.hero.line2}></p>
+    <p class="hero-subtitle-line1">{hero.line1}</p>
+    <p class="hero-subtitle-line2" set:html={hero.line2}></p>
     <div class="hero-ctas">
-      <a href="#about" class="btn-primary">{t.hero.cta1}</a>
-      <a href="#team" class="btn-secondary">{t.hero.cta2}</a>
+      <a href="#about" class="btn-primary">{hero.cta1}</a>
+      <a href="#team" class="btn-secondary">{hero.cta2}</a>
     </div>
   </div>
   <div class="hero-right">
-    <img src="/logo-dalia.png" alt="DALIA" class="dalia-logo" />
+    <img src={hero.logo} alt="DALIA" class="dalia-logo" />
     <div class="hero-meta">
-      <p>{t.hero.meta}</p>
+      <p>{hero.meta}</p>
     </div>
   </div>
 </section>
@@ -77,34 +240,24 @@ const currentHref = lang === 'es' ? '/' : '/en/';
 <!-- ABOUT -->
 <section id="about">
   <div class="about-content reveal">
-    <p class="section-label">{t.about.label}</p>
-    <h2 class="section-title">{t.about.title}</h2>
-    <p>{t.about.p1}</p>
-    <h3 class="about-subtitle">{t.about.aboutSubtitle}</h3>
-    <p>{t.about.p2}</p>
-    <p>{t.about.p3}</p>
-    <p>{t.about.p4}</p>
-    <p class="about-reference">{t.about.reference}</p>
+    <p class="section-label">{about.label}</p>
+    <h2 class="section-title">{about.title}</h2>
+    <p>{about.p1}</p>
+    <h3 class="about-subtitle">{about.aboutSubtitle}</h3>
+    <p>{about.p2}</p>
+    <p>{about.p3}</p>
+    <p>{about.p4}</p>
+    <p class="about-reference">{about.reference}</p>
   </div>
   <div class="about-objectives reveal">
-    <h3>{t.about.objectivesTitle}</h3>
+    <h3>{about.objectivesTitle}</h3>
     <div class="objectives-grid">
-      <div class="objective-item">
-        <span class="objective-num">01</span>
-        <p>{t.about.obj1}</p>
-      </div>
-      <div class="objective-item">
-        <span class="objective-num">02</span>
-        <p>{t.about.obj2}</p>
-      </div>
-      <div class="objective-item">
-        <span class="objective-num">03</span>
-        <p>{t.about.obj3}</p>
-      </div>
-      <div class="objective-item">
-        <span class="objective-num">04</span>
-        <p>{t.about.obj4}</p>
-      </div>
+      {about.objectives.map((obj: string, i: number) => (
+        <div class="objective-item">
+          <span class="objective-num">{String(i + 1).padStart(2, '0')}</span>
+          <p>{obj}</p>
+        </div>
+      ))}
     </div>
   </div>
 </section>
@@ -112,45 +265,22 @@ const currentHref = lang === 'es' ? '/' : '/en/';
 <!-- ENTITIES (moved before TEAM) -->
 <section id="entities">
   <div class="entities-inner">
-    <p class="section-label reveal">{t.entities.label}</p>
-    <h2 class="section-title reveal">{t.entities.title}</h2>
+    <p class="section-label reveal">{entitiesLabels.label}</p>
+    <h2 class="section-title reveal">{entitiesLabels.title}</h2>
     <div class="entities-grid reveal">
-      <div class="entity-card">
-        <span class="entity-badge">{t.entities.coordinator}</span>
-        <p class="entity-name">Institut d'Investigació en Intel·ligència Artificial – CSIC</p>
-        <p class="entity-location">Barcelona, Cataluña</p>
-        <div class="entity-logo-placeholder"><span>LOGO</span></div>
-      </div>
-      <div class="entity-card">
-        <span class="entity-badge">{t.entities.participant}</span>
-        <p class="entity-name">Escuela Andaluza de Salud Pública</p>
-        <p class="entity-location">Granada, Andalucía</p>
-        <div class="entity-logo-placeholder"><span>LOGO</span></div>
-      </div>
-      <div class="entity-card">
-        <span class="entity-badge">{t.entities.participant}</span>
-        <p class="entity-name">Fundació Hospital d'Olot i Comarcal de la Garrotxa</p>
-        <p class="entity-location">Olot, Cataluña</p>
-        <div class="entity-logo-placeholder"><span>LOGO</span></div>
-      </div>
-      <div class="entity-card">
-        <span class="entity-badge">{t.entities.participant}</span>
-        <p class="entity-name">Institut d'Investigació en Atenció Primària Jordi Gol – ICS</p>
-        <p class="entity-location">Barcelona, Cataluña</p>
-        <div class="entity-logo-placeholder"><span>LOGO</span></div>
-      </div>
-      <div class="entity-card">
-        <span class="entity-badge">{t.entities.participant}</span>
-        <p class="entity-name">Universitat Autònoma de Barcelona</p>
-        <p class="entity-location">Bellaterra, Cataluña</p>
-        <div class="entity-logo-placeholder"><span>LOGO</span></div>
-      </div>
-      <div class="entity-card">
-        <span class="entity-badge">{t.entities.participant}</span>
-        <p class="entity-name">Universitat de Barcelona</p>
-        <p class="entity-location">Barcelona, Cataluña</p>
-        <div class="entity-logo-placeholder"><span>LOGO</span></div>
-      </div>
+      {entities.map((entity: any) => (
+        <div class="entity-card">
+          <span class="entity-badge">
+            {entity.type === 'coordinator' ? entitiesLabels.coordinator : entitiesLabels.participant}
+          </span>
+          <p class="entity-name">{entity.name}</p>
+          <p class="entity-location">{entity.location}</p>
+          {entity.logoUrl
+            ? <img src={entity.logoUrl} alt={entity.name} class="entity-logo" />
+            : <div class="entity-logo-placeholder"><span>LOGO</span></div>
+          }
+        </div>
+      ))}
     </div>
   </div>
 </section>
@@ -159,160 +289,48 @@ const currentHref = lang === 'es' ? '/' : '/en/';
 <section id="team">
   <div class="team-header reveal">
     <div>
-      <p class="section-label" style="color:var(--accent);">{t.team.label}</p>
-      <h2 class="section-title" set:html={t.team.title}></h2>
+      <p class="section-label" style="color:var(--accent);">{teamLabels.label}</p>
+      <h2 class="section-title" set:html={teamLabels.title}></h2>
     </div>
-    <p style="font-size:0.8rem;color:#666;max-width:200px;text-align:right;">{t.team.count}</p>
+    <p style="font-size:0.8rem;color:#666;max-width:200px;text-align:right;">{teamLabels.count}</p>
   </div>
   <div class="team-grid">
-    <!-- Núria Vallès Peris (PI, first) -->
-    <div class="team-card reveal">
-      <div class="team-card-placeholder"><span>NV</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Núria Vallès Peris</p>
-        <p class="team-card-role">{t.team.pi} &middot; IIIA-CSIC</p>
+    {teamMembers.map((member: any, i: number) => (
+      <div class="team-card reveal" style={i > 0 ? `transition-delay:${i * 0.05}s` : ''}>
+        {member.photoUrl
+          ? <img src={member.photoUrl} alt={member.name} class="team-card-photo" />
+          : <div class="team-card-placeholder"><span>{member.initials}</span></div>
+        }
+        <div class="team-card-info">
+          <p class="team-card-name">{member.name}</p>
+          <p class="team-card-role">{getRoleLabel(member.role)} &middot; {member.institution}</p>
+        </div>
+        <div class="team-card-links">
+          {member.orcidUrl && <a href={member.orcidUrl} class="team-link-btn">ORCID</a>}
+          {member.profileUrl && <a href={member.profileUrl} class="team-link-btn">Perfil</a>}
+        </div>
       </div>
-      <div class="team-card-links">
-        <a href="#" class="team-link-btn">ORCID</a>
-        <a href="#" class="team-link-btn">Perfil</a>
-      </div>
-    </div>
-    <!-- Alphabetical order by surname -->
-    <div class="team-card reveal" style="transition-delay:0.05s">
-      <div class="team-card-placeholder"><span>VA</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Violeta Argudo</p>
-        <p class="team-card-role">{t.team.researcher_f} &middot; UB</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
-    <div class="team-card reveal" style="transition-delay:0.1s">
-      <div class="team-card-placeholder"><span>VB</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Víctor Bermejo</p>
-        <p class="team-card-role">{t.team.researcher_m} &middot; IIIA-CSIC</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
-    <div class="team-card reveal" style="transition-delay:0.15s">
-      <div class="team-card-placeholder"><span>MC</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Maite Cruz</p>
-        <p class="team-card-role">{t.team.researcher_f} &middot; EASP</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
-    <div class="team-card reveal" style="transition-delay:0.2s">
-      <div class="team-card-placeholder"><span>ND</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Neus Domènech</p>
-        <p class="team-card-role">{t.team.researcher_f} &middot; Hospital Olot</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
-    <div class="team-card reveal" style="transition-delay:0.25s">
-      <div class="team-card-placeholder"><span>LL</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Lisette Lemus</p>
-        <p class="team-card-role">{t.team.researcher_f} &middot; IIIA-CSIC</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
-    <div class="team-card reveal" style="transition-delay:0.3s">
-      <div class="team-card-placeholder"><span>BL</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Brenda Biaani León</p>
-        <p class="team-card-role">{t.team.researcher_f} &middot; IDIAP-JGol</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
-    <div class="team-card reveal" style="transition-delay:0.35s">
-      <div class="team-card-placeholder"><span>EM</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Eduard Moreno</p>
-        <p class="team-card-role">{t.team.researcher_m} &middot; IDIAP-JGol</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
-    <div class="team-card reveal" style="transition-delay:0.4s">
-      <div class="team-card-placeholder"><span>JM</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Juan José Moreno</p>
-        <p class="team-card-role">{t.team.researcher_m} &middot; IDIAP-JGol</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
-    <div class="team-card reveal" style="transition-delay:0.45s">
-      <div class="team-card-placeholder"><span>JM</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Joan Moyà</p>
-        <p class="team-card-role">{t.team.researcher_m} &middot; UAB</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
-    <div class="team-card reveal" style="transition-delay:0.5s">
-      <div class="team-card-placeholder"><span>JP</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Joel Piqué</p>
-        <p class="team-card-role">{t.team.researcher_m} &middot; Hospital Olot</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
-    <div class="team-card reveal" style="transition-delay:0.55s">
-      <div class="team-card-placeholder"><span>MP</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Marina Prat Carreño</p>
-        <p class="team-card-role">{t.team.researcher_f} &middot; IIIA-CSIC</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
-    <div class="team-card reveal" style="transition-delay:0.6s">
-      <div class="team-card-placeholder"><span>VU</span></div>
-      <div class="team-card-info">
-        <p class="team-card-name">Valentina Umaña</p>
-        <p class="team-card-role">{t.team.researcher_f} &middot; IIIA-CSIC</p>
-      </div>
-      <div class="team-card-links"><a href="#" class="team-link-btn">ORCID</a></div>
-    </div>
+    ))}
   </div>
 </section>
 
 <!-- METHODOLOGY (was PHASES) -->
 <section id="metodologia">
   <div class="phases-inner">
-    <p class="section-label reveal">{t.phases.label}</p>
-    <h2 class="section-title reveal" set:html={t.phases.title}></h2>
+    <p class="section-label reveal">{phasesLabels.label}</p>
+    <h2 class="section-title reveal" set:html={phasesLabels.title}></h2>
     <div class="timeline">
       <div class="timeline-line"></div>
       <div class="timeline-cards">
-        <a href={t.phases.phase1.url} class="timeline-card active" id="phase1">
-          <div class="timeline-dot"></div>
-          <p class="timeline-num">01</p>
-          <h3 class="timeline-phase" set:html={t.phases.phase1.title}></h3>
-          <p class="timeline-desc">{t.phases.phase1.desc}</p>
-          <p class="timeline-link">{t.phases.readMore}</p>
-        </a>
-        <a href={t.phases.phase2.url} class="timeline-card" id="phase2">
-          <div class="timeline-dot"></div>
-          <p class="timeline-num">02</p>
-          <h3 class="timeline-phase" set:html={t.phases.phase2.title}></h3>
-          <p class="timeline-desc">{t.phases.phase2.desc}</p>
-          <p class="timeline-link">{t.phases.readMore}</p>
-        </a>
-        <a href={t.phases.phase3.url} class="timeline-card" id="phase3">
-          <div class="timeline-dot"></div>
-          <p class="timeline-num">03</p>
-          <h3 class="timeline-phase" set:html={t.phases.phase3.title}></h3>
-          <p class="timeline-desc">{t.phases.phase3.desc}</p>
-          <p class="timeline-link">{t.phases.readMore}</p>
-        </a>
-        <a href={t.phases.phase4.url} class="timeline-card" id="phase4">
-          <div class="timeline-dot"></div>
-          <p class="timeline-num">04</p>
-          <h3 class="timeline-phase" set:html={t.phases.phase4.title}></h3>
-          <p class="timeline-desc">{t.phases.phase4.desc}</p>
-          <p class="timeline-link">{t.phases.readMore}</p>
-        </a>
+        {phases.map((phase: any, i: number) => (
+          <a href={phase.url} class={`timeline-card${i === 0 ? ' active' : ''}`} id={`phase${phase.phaseNumber}`}>
+            <div class="timeline-dot"></div>
+            <p class="timeline-num">{String(phase.phaseNumber).padStart(2, '0')}</p>
+            <h3 class="timeline-phase" set:html={phase.title}></h3>
+            <p class="timeline-desc">{phase.desc}</p>
+            <p class="timeline-link">{phasesLabels.readMore}</p>
+          </a>
+        ))}
       </div>
     </div>
   </div>
@@ -323,12 +341,26 @@ const currentHref = lang === 'es' ? '/' : '/en/';
   <div class="pubs-inner">
     <div class="pubs-header reveal">
       <div>
-        <p class="section-label">{t.publications.label}</p>
-        <h2 class="section-title">{t.publications.title}</h2>
+        <p class="section-label">{pubLabels.label}</p>
+        <h2 class="section-title">{pubLabels.title}</h2>
       </div>
     </div>
     <div class="pubs-list reveal">
-      <div class="pub-empty">{t.publications.empty}</div>
+      {publications.length > 0 ? (
+        publications.map((pub: any) => (
+          <div class="pub-item">
+            <span class="pub-year">{pub.year}</span>
+            <div class="pub-info">
+              <p class="pub-title">{s(pub.title, '')}</p>
+              {pub.authors && <p class="pub-authors">{pub.authors}</p>}
+              {pub.journal && <p class="pub-journal">{pub.journal}</p>}
+              {pub.url && <a href={pub.url} class="pub-link" target="_blank" rel="noopener">Ver publicación</a>}
+            </div>
+          </div>
+        ))
+      ) : (
+        <div class="pub-empty">{pubLabels.empty}</div>
+      )}
     </div>
   </div>
 </section>
@@ -337,27 +369,27 @@ const currentHref = lang === 'es' ? '/' : '/en/';
 <section id="contact">
   <div class="contact-inner">
     <div class="contact-info reveal">
-      <p class="section-label">{t.contact.label}</p>
-      <h2 class="section-title">{t.contact.title}</h2>
-      <p>{t.contact.text}</p>
+      <p class="section-label">{contact.label}</p>
+      <h2 class="section-title">{contact.title}</h2>
+      <p>{contact.text}</p>
       <div class="contact-detail">
-        <p class="contact-detail-label">{t.contact.piLabel}</p>
-        <p class="contact-detail-value">Núria Vallès Peris</p>
+        <p class="contact-detail-label">{contact.piLabel}</p>
+        <p class="contact-detail-value">{contact.piName}</p>
       </div>
       <div class="contact-detail">
-        <p class="contact-detail-label">{t.contact.emailLabel}</p>
+        <p class="contact-detail-label">{contact.emailLabel}</p>
         <p class="contact-detail-value">
-          <a href="mailto:nuria.valles@iiia.csic.es">nuria.valles@iiia.csic.es</a>
+          <a href={`mailto:${contact.email}`}>{contact.email}</a>
         </p>
       </div>
       <div class="contact-detail">
-        <p class="contact-detail-label">{t.contact.institutionLabel}</p>
-        <p class="contact-detail-value" set:html={t.contact.institutionValue}></p>
+        <p class="contact-detail-label">{contact.institutionLabel}</p>
+        <p class="contact-detail-value" set:html={contact.institutionValue}></p>
       </div>
     </div>
     <div class="contact-map reveal" style="transition-delay:0.2s">
       <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2988.0982293101156!2d2.10127867712562!3d41.50214608886753!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12a4942a9b7b8f63%3A0x8a51bd1095fe826d!2sUniversidad%20Aut%C3%B3noma%20de%20Barcelona%20(UAB)!5e0!3m2!1ses!2ses!4v1772728724490!5m2!1ses!2ses"
+        src={contact.mapEmbedUrl}
         width="100%" height="100%" style="border:0;display:block;"
         allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
       ></iframe>
@@ -368,12 +400,14 @@ const currentHref = lang === 'es' ? '/' : '/en/';
 <!-- FOOTER -->
 <footer>
   <div class="footer-logos">
-    <div class="footer-logo-box"><span>IIIA–CSIC</span></div>
-    <div class="footer-logo-box"><span>CSIC</span></div>
-    <div class="footer-logo-box"><span>Min. Ciencia</span></div>
+    {footer.logos.map((item: any) => (
+      item.logoUrl
+        ? <div class="footer-logo-box"><img src={item.logoUrl} alt={item.name} class="footer-logo-img" /></div>
+        : <div class="footer-logo-box"><span>{item.name}</span></div>
+    ))}
   </div>
   <span class="footer-dalia">DALIA</span>
-  <p class="footer-copy">{t.footer.copy}</p>
+  <p class="footer-copy">{footer.copy}</p>
 </footer>
 
 <script>

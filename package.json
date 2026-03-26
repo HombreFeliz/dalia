@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "sanity": "sanity dev",
+    "sanity:deploy": "sanity deploy"
   },
   "dependencies": {
     "@sanity/client": "^7.20.0",
