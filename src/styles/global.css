@@ -837,7 +837,7 @@ footer {
 .footer-logos {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .footer-logo-placeholder {
@@ -848,7 +848,7 @@ footer {
 }
 
 .footer-logo-box {
-  height: 64px;
+  height: 80px;
   padding: 0 1.5rem;
   display: flex;
   align-items: center;
