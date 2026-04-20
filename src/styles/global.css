@@ -848,9 +848,8 @@ footer {
 }
 
 .footer-logo-box {
-  height: 32px;
-  padding: 0 1rem;
-  border: 1px solid #444;
+  height: 64px;
+  padding: 0 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
