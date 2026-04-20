@@ -9,9 +9,8 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const altLang = lang === 'es' ? 'en' : 'es';
-const altHref = lang === 'es' ? '/en/' : '/';
-const currentHref = lang === 'es' ? '/' : '/en/';
+const langUrls = { es: '/', en: '/en/', ca: '/ca/' };
+const currentHref = langUrls[lang];
 
 // Fetch from Sanity (falls back to translations.ts when Sanity data is empty)
 let sanity: Awaited<ReturnType<typeof getHomePageData>> | null = null;
@@ -142,7 +141,9 @@ const phases = sanity?.phases?.length
       desc: s(p.description, ''),
       url: lang === 'es'
         ? `/metodologia/${p.slug}/`
-        : `/en/methodology/${p.slugEn}/`,
+        : lang === 'en'
+          ? `/en/methodology/${p.slugEn}/`
+          : `/ca/metodologia/${p.slug}/`,
     }))
   : defaultPhases;
 
@@ -192,11 +193,11 @@ const footer = {
     <li><a href="#publications" class="menu-link">{nav.publications}</a></li>
     <li><a href="#contact" class="menu-link">{nav.contact}</a></li>
   </ul>
-  <div class="mobile-menu-lang">
-    <a href={currentHref} class={`lang-option ${lang === 'es' ? 'active' : ''}`}>ES</a>
-    <span style="color:#333;">/</span>
-    <a href={altHref} class={`lang-option ${lang === 'en' ? 'active' : ''}`}>ENG</a>
-  </div>
+  <select class="lang-select-mobile" onchange="location.href = this.value">
+    <option value="/" selected={lang === 'es'}>ESP</option>
+    <option value="/en/" selected={lang === 'en'}>ENG</option>
+    <option value="/ca/" selected={lang === 'ca'}>CAT</option>
+  </select>
 </div>
 
 <!-- NAV -->
@@ -211,11 +212,11 @@ const footer = {
     <li><a href="#contact">{nav.contact}</a></li>
   </ul>
   <div class="nav-right">
-    <div class="lang-toggle">
-      <a href="/" class={lang === 'es' ? 'active' : ''}>ES</a>
-      <span style="color:#ccc;">/</span>
-      <a href="/en/" class={lang === 'en' ? 'active' : ''}>ENG</a>
-    </div>
+    <select class="lang-select" onchange="location.href = this.value">
+      <option value="/" selected={lang === 'es'}>ESP</option>
+      <option value="/en/" selected={lang === 'en'}>ENG</option>
+      <option value="/ca/" selected={lang === 'ca'}>CAT</option>
+    </select>
     <div class="hamburger">
       <span></span><span></span><span></span>
     </div>

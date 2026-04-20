@@ -219,6 +219,116 @@ export const translations = {
       },
     },
   },
+  ca: {
+    nav: {
+      project: 'Projecte',
+      entities: 'Entitats',
+      team: 'Equip',
+      phases: 'Metodologia',
+      publications: 'Publicacions',
+      contact: 'Contacte',
+    },
+    hero: {
+      tag: 'Ministeri de Ciència, Innovació i Universitats · 2025–2028',
+      line1: 'Dades, Algoritmes i Intel·ligència Artificial en Atenció Primària',
+      line2: 'Cap a una digitalització responsable en els cuidats i la salut.',
+      cta1: 'Conèixer el projecte →',
+      cta2: 'Conèixer l\'equip',
+      meta: 'IIIA-CSIC · Barcelona',
+    },
+    about: {
+      label: 'El Projecte',
+      title: 'Dades, Algoritmes i Intel·ligència Artificial en Atenció Primària. Cap a una digitalització responsable en els cuidats i la salut (DALIA)',
+      p1: 'El projecte DALIA és una recerca de I+D+i finançada pel Ministeri de Ciència, Innovació i Universitats per al període 2025-2028. El projecte està liderat per l\'Institut d\'Investigació en Intel·ligència Artificial del CSIC (IP Núria Vallès Peris), amb un equip de més de 10 investigadors i investigadores, i amb la participació de 6 centres de recerca: Escola Andalusa de Salut Pública, Fundació Hospital d\'Olot i Comarcal de la Garrotxa, Institut d\'Investigació en Atenció Primària Jordi Gol–Institut Català de la Salut, Institut d\'Investigació en Intel·ligència Artificial–CSIC, Universitat Autònoma de Barcelona i Universitat de Barcelona.',
+      aboutSubtitle: 'Finalitat i objectius del projecte',
+      p2: 'En els últims anys, la intel·ligència artificial (IA) ha adquirit un paper especialment rellevant en la transformació digital de la societat en múltiples àmbits, entre ells la salut. La IA ofereix múltiples potencialitats en el camp de la sanitat i la salut. Tanmateix, també planteja diversos desafiaments per a la pràctica clínica, l\'organització dels sistemes de salut, les relacions amb els pacients i la comprensió mateixa de la salut i la malaltia o l\'ètica de la salut pública. El projecte DALIA se centra en l\'estudi d\'aquests reptes en l\'àmbit de l\'atenció primària, partint de la premissa que aquesta constitueix un pilar essencial i bàsic per a l\'equitat i la justícia social en tot allò relacionat amb la salut i el benestar. L\'atenció primària de salut és àmpliament reconeguda com la via més inclusiva, equitativa i cost-efectiva per assolir la cobertura sanitària universal. Així mateix, resulta fonamental per fortalecer la resiliència dels sistemes de salut, a fi de preparar-los per afrontar, respondre i recuperar-se davant de situacions d\'emergència i crisi.',
+      p3: 'DALIA és un estudi liderat des de la perspectiva interdisciplinària dels Estudis Socials de la Ciència i la Tecnologia (STS), desenvolupat per un equip de recerca multidisciplinari (sociologia, antropologia, psicologia social, filosofia i salut pública). Aquesta riquesa d\'especialitzacions i enfocaments confereix al projecte DALIA un caràcter singular i particularment innovador. Des d\'aquesta perspectiva, en lloc de percebre la IA en l\'àmbit de la salut únicament com a xarxes neuronals i reconeixement de patrons estadístics inherents a l\'aprenentatge automàtic, aquesta recerca adopta una perspectiva més àmplia de la IA —una que entén la IA com un sistema sociotècnic.',
+      p4: 'Des d\'aquest plantejament i integrant una aproximació crítica a l\'estudi de la IA, l\'objectiu general de DALIA és promoure una incorporació responsable dels sistemes d\'IA en l\'atenció primària, ajustada a les necessitats assistencials i al benestar de les persones.',
+      reference: 'PID2024-160387NA-I00. Agencia Estatal de Investigación, Ministerio de Ciencia Innovación y Universidades.',
+      objectivesTitle: 'Objectius específics',
+      obj1: 'Analitzar la percepció i valoració de la IA de les persones que treballen en els centres d\'atenció primària (personal mèdic, d\'infermeria i administratiu), els seus impactes en les competències professionals, la identitat professional i les condicions laborals.',
+      obj2: 'Identificar les preocupacions i (potencials) biaixos d\'accés i relació dels pacients amb el sistema sanitari, deguda a la implantació de sistemes d\'automatització basada en algoritmes.',
+      obj3: 'Avaluar l\'impacte de la introducció dels sistemes d\'IA, i altres sistemes d\'automatització, en les pràctiques i rutines quotidianes dels centres d\'atenció primària.',
+      obj4: 'Elaborar un decàleg de recomanacions participatiu —Policy Brief— per garantir que la IA contribueix a millorar l\'atenció primària.',
+    },
+    team: {
+      label: 'L\'Equip',
+      title: 'Investigadores<br />e Investigadors',
+      count: '12 investigadors · 6 institucions',
+      pi: 'Investigadora Principal',
+      researcher_f: 'Investigadora',
+      researcher_m: 'Investigador',
+    },
+    phases: {
+      label: 'Metodologia',
+      title: 'Un projecte amb<br />mètodes mixtos',
+      readMore: 'Veure més →',
+      phase1: {
+        title: 'Entrevistes',
+        desc: 'Entrevistes en profunditat amb professionals dels centres d\'atenció primària.',
+        url: '/ca/metodologia/entrevistes/',
+      },
+      phase2: {
+        title: 'Qüestionaris',
+        desc: 'Qüestionaris per avaluar percepcions i actituds sobre la IA.',
+        url: '/ca/metodologia/cuestionarios/',
+      },
+      phase3: {
+        title: 'Etnografia',
+        desc: 'Observació etnogràfica de les pràctiques quotidianes en centres de salut.',
+        url: '/ca/metodologia/etnografia/',
+      },
+      phase4: {
+        title: 'Procés<br />participatiu',
+        desc: 'Co-disseny de recomanacions amb actors clau del sistema sanitari.',
+        url: '/ca/metodologia/proceso-participativo/',
+      },
+    },
+    entities: {
+      label: 'Entitats Participants',
+      title: 'Sis centres de recerca',
+      coordinator: 'Coordinadora',
+      participant: 'Participant',
+    },
+    publications: {
+      label: 'Publicacions',
+      title: 'Resultats del projecte',
+      empty: 'En aquesta secció s\'aniran recollint els articles científics i materials de divulgació generats al llarg del projecte.',
+    },
+    contact: {
+      label: 'Contacte',
+      title: 'Contacte',
+      text: 'Per a qualsevol consulta sobre el projecte DALIA, pots posar-te en contacte amb la investigadora principal.',
+      piLabel: 'Investigadora Principal',
+      emailLabel: 'Correu electrònic',
+      institutionLabel: 'Institució',
+      institutionValue: 'Institut d\'Investigació en Intel·ligència Artificial<br />Campus UAB · Bellaterra, Barcelona',
+      mapLabel: 'Campus UAB · Bellaterra',
+    },
+    footer: {
+      copy: '© 2025–2028 Projecte DALIA · I+D+i',
+    },
+    methodology: {
+      backLink: '← Tornar a metodologia',
+      placeholder: 'El contingut d\'aquesta secció s\'actualitzarà conforme avanci la recerca.',
+      entrevistas: {
+        title: 'Entrevistes',
+        content: 'Es duran a terme entrevistes en profunditat amb el personal dels centres d\'atenció primària participants (personal mèdic, d\'infermeria i administratiu). Les entrevistes exploraran la percepció i valoració de la IA, així com els seus impactes en les competències i la identitat professional.',
+      },
+      cuestionarios: {
+        title: 'Qüestionaris',
+        content: 'Es dissenyaran i distribuiran qüestionaris per avaluar les percepcions, actituds i preocupacions del personal sanitari i pacients respecte als sistemes d\'intel·ligència artificial en atenció primària.',
+      },
+      etnografia: {
+        title: 'Etnografia',
+        content: 'Es realitzarà treball etnogràfic en els centres d\'atenció primària participants, observant les pràctiques i rutines quotidianes per avaluar l\'impacte de la introducció de sistemes d\'IA i altres sistemes d\'automatització.',
+      },
+      procesoParticipativo: {
+        title: 'Procés participatiu',
+        content: 'S\'organitzarà un procés participatiu per a l\'elaboració d\'un decàleg de recomanacions —Policy Brief— que garantisca que la IA contribueix a millorar l\'atenció primària.',
+      },
+    },
+  },
 } as const;
 
 export type Lang = keyof typeof translations;

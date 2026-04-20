@@ -62,6 +62,20 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
 }
 .nav-links a:hover { color: var(--accent); }
 
+.lang-select {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--black);
+  background: transparent;
+  border: 1px solid var(--light-gray);
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lang-select:hover { border-color: var(--accent); color: var(--accent); }
+.lang-select:focus { outline: none; border-color: var(--accent); color: var(--accent); }
+
 .lang-toggle {
   display: flex;
   gap: 0.4rem;
@@ -842,6 +856,13 @@ footer {
   justify-content: center;
 }
 
+.footer-logo-img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 .footer-logo-box span {
   font-size: 0.65rem;
   font-weight: 700;
@@ -949,6 +970,21 @@ footer {
 }
 
 .mobile-menu ul li a:hover { color: var(--accent); padding-left: 0.5rem; }
+
+.lang-select-mobile {
+  margin-top: 2.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--white);
+  background: transparent;
+  border: 1px solid #555;
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lang-select-mobile:hover { border-color: var(--accent); color: var(--accent); }
+.lang-select-mobile:focus { outline: none; border-color: var(--accent); color: var(--accent); }
 
 .mobile-menu-lang {
   margin-top: 2.5rem;
