@@ -141,7 +141,9 @@ const phases = sanity?.phases?.length
       desc: s(p.description, ''),
       url: lang === 'es'
         ? `/metodologia/${p.slug}/`
-        : `/en/methodology/${p.slugEn}/`,
+        : lang === 'en'
+          ? `/en/methodology/${p.slugEn}/`
+          : `/ca/metodologia/${p.slug}/`,
     }))
   : defaultPhases;
 
